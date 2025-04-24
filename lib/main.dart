@@ -14,8 +14,15 @@ class CryptoApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => MoedaViewModel()..carregarMoedas()),
-        ChangeNotifierProvider(create: (_) => FavoritosViewModel()),
+        ChangeNotifierProvider(create: (_) => FavoritosViewModel()..carregarFavoritos()),
+        ChangeNotifierProvider(create: (context) {
+          final moedaVm = MoedaViewModel();
+          final favoritosVm = context.read<FavoritosViewModel>();
+          moedaVm.setFavoritosVm(favoritosVm);
+          moedaVm.carregarMoedas();
+
+          return moedaVm;
+        }),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,

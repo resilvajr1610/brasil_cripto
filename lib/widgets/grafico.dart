@@ -1,5 +1,7 @@
+import 'package:brasil_cripto/models/cores.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import '../models/preco_historico.dart';
 
 Widget buildGrafico(List<PrecoHistorico> dados) {
@@ -18,8 +20,11 @@ Widget buildGrafico(List<PrecoHistorico> dados) {
             p.preco,
           )).toList(),
           isCurved: true,
-          color: Colors.deepPurple,
+          color: Cores.azul,
           barWidth: 2,
+          dotData: FlDotData(
+            show: false,
+          ),
         ),
       ],
       titlesData: FlTitlesData(
@@ -27,17 +32,15 @@ Widget buildGrafico(List<PrecoHistorico> dados) {
           sideTitles: SideTitles(
             showTitles: true,
             reservedSize: 30,
-            interval: 60,
+            interval:  5 * 60 * 60 * 1000,
             getTitlesWidget: (value, meta) {
               final date = DateTime.fromMillisecondsSinceEpoch(value.toInt());
 
-              return Padding(
-                padding: const EdgeInsets.only(top: 8),
-                child: Text(
+              return Text(
                   "${date.hour.toString().padLeft(2, '0')}:${date.minute.toString().padLeft(2, '0')}",
-                  style: const TextStyle(fontSize: 10),
-                ),
+                  style: TextStyle(fontSize: 10,color: Cores.azul)
               );
+
             },
           ),
         ),
@@ -55,20 +58,20 @@ Widget buildGrafico(List<PrecoHistorico> dados) {
       borderData: FlBorderData(show: true),
       lineTouchData: LineTouchData(
         touchTooltipData: LineTouchTooltipData(
-          getTooltipColor: (spot)=> Colors.grey,
+          getTooltipColor: (spot)=> Colors.white,
           tooltipRoundedRadius: 8,
           getTooltipItems: (touchedSpots) {
             return touchedSpots.map((spot) {
               final timestamp = spot.x.toInt();
               final valor = spot.y;
-              final date = DateTime.fromMillisecondsSinceEpoch(timestamp.toInt() * 1000);
+              final date = DateTime.fromMillisecondsSinceEpoch(timestamp);
               final dataFormatada = "${date.day.toString().padLeft(2, '0')}/"
                   "${date.month.toString().padLeft(2, '0')} "
                   "${date.hour.toString().padLeft(2, '0')}:"
                   "${date.minute.toString().padLeft(2, '0')}";
 
               return LineTooltipItem(
-                '$dataFormatada\nR\$ ${valor.toStringAsFixed(2)}',
+                '$dataFormatada\nR\$ ${NumberFormat('#,##0.00', 'pt_BR').format(valor)}',
                 TextStyle(
                   color: Colors.black, // texto bem visível
                   fontWeight: FontWeight.bold,

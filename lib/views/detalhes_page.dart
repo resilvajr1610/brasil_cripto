@@ -1,11 +1,13 @@
 import 'dart:async';
 
+import 'package:brasil_cripto/models/cores.dart';
 import 'package:brasil_cripto/models/crypto.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import '../models/moeda.dart';
 import '../models/preco_historico.dart';
 import '../services/api_service.dart';
-import 'grafico.dart';
+import '../widgets/grafico.dart';
 
 class DetalhesPage extends StatefulWidget {
   final Moeda moeda;
@@ -42,46 +44,64 @@ class _DetalhesPageState extends State<DetalhesPage> {
 
   carregarPrecos(){
     historico = ApiService.buscarDadosGrafico(widget.moeda.id);
+    print(historico);
   }
-
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.grey[300],
       appBar: AppBar(
+        iconTheme: IconThemeData(color: Cores.amarelo),
+        backgroundColor: Cores.azul,
         title: Row(
           children: [
             Container(
-                child: Text('${widget.moeda.name} (${widget.moeda.symbol.toUpperCase()})'),
+                child: Text(
+                  '${widget.moeda.name} (${widget.moeda.symbol.toUpperCase()})',
+                    style: TextStyle(color: Cores.amarelo),
+                ),
                 width: MediaQuery.of(context).size.width*0.6,
             ),
             Spacer(),
-            crypto==null || crypto!.logo==''?Container():Image.network(
-              crypto!.logo,
-              width: 50,
-              height: 50,
+            crypto==null || crypto!.logo==''?Container():CircleAvatar(
+              maxRadius: 25,
+              backgroundImage: NetworkImage(crypto!.logo,),
+              backgroundColor: Colors.white,
             )
           ],
         ),
       ),
       body: carregando || crypto==null
-          ? Center(child: CircularProgressIndicator())
+          ? Center(child: CircularProgressIndicator(color: Cores.azul,))
           : Padding(
         padding: const EdgeInsets.all(16.0),
         child: ListView(
           children: [
-            Text('Preço Atual: R\$ ${crypto!.price.toString().replaceAll('.', ',')}'),
+            Text(
+              'Preço Atual:',
+              style: TextStyle(fontWeight: FontWeight.bold,color: Cores.azul),
+            ),
+            Text('R\$ ${NumberFormat('#,##0.00', 'pt_BR').format(crypto!.price)}',style: TextStyle(color: Cores.azulClaro),),
             SizedBox(height: 16),
-            Text('Variação 24h: ${crypto!.changePercent24h.toStringAsFixed(2).replaceAll('.', ',')}%'),
+            Text(
+              'Variação 24h:',
+              style: TextStyle(fontWeight: FontWeight.bold,color: Cores.azul),
+            ),
+            Text('${crypto!.changePercent24h.toStringAsFixed(2).replaceAll('.', ',')}%',style: TextStyle(color: Cores.azulClaro),),
             SizedBox(height: 16),
-            Text('Volume : ${crypto!.volume}'),
+            Text(
+              'Volume:',
+              style: TextStyle(fontWeight: FontWeight.bold,color: Cores.azul),
+            ),
+            Text('${NumberFormat('00,000').format(crypto!.volume.toInt()).replaceAll(',', '.')}',style: TextStyle(color: Cores.azulClaro),),
             SizedBox(height: 16),
             Text(
               'Descrição:',
-              style: TextStyle(fontWeight: FontWeight.bold),
+              style: TextStyle(fontWeight: FontWeight.bold,color: Cores.azul),
             ),
             SizedBox(height: 8),
-            Text('${crypto!.description}'),
+            Text('${crypto!.description}',style: TextStyle(color: Cores.azulClaro),),
             SizedBox(height: 15),
             FutureBuilder<List<PrecoHistorico>>(
               future: historico,
@@ -93,7 +113,6 @@ class _DetalhesPageState extends State<DetalhesPage> {
                 } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
                   return Center(child: Text('Sem dados de gráfico'));
                 }
-
                 return SizedBox(
                   height: 200,
                   child: buildGrafico(snapshot.data!),
