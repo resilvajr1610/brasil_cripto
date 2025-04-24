@@ -16,8 +16,14 @@ class HomePage extends StatelessWidget {
 
     if (moedaVm.carregando) {
       return Scaffold(
-        appBar: AppBar(title: Text('CriptoTracker')),
-        body: Center(child: CircularProgressIndicator()),
+        appBar: AppBar(title: Text('Brasil Cripto')),
+        body: Center(child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            CircularProgressIndicator(color: Cores.azul,),
+            Text('Carregando ...', style: TextStyle(color: Cores.azul),)
+          ],
+        )),
       );
     }
 

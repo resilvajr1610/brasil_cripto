@@ -20,15 +20,14 @@ class CryptoApp extends StatelessWidget {
           final favoritosVm = context.read<FavoritosViewModel>();
           moedaVm.setFavoritosVm(favoritosVm);
           moedaVm.carregarMoedas();
-
           return moedaVm;
         }),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
-        title: 'CriptoTracker',
+        title: 'Brasil Cripto',
         theme: ThemeData(
-          primarySwatch: Colors.deepPurple,
+          primarySwatch: Colors.blue,
           useMaterial3: true,
         ),
         home: HomePage(),
