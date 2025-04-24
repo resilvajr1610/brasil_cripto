@@ -57,7 +57,7 @@ class HomePage extends StatelessWidget {
                 children: [
                   Container(
                     width: largura*0.65,
-                    padding: EdgeInsets.all(8),
+                    padding: EdgeInsets.symmetric(vertical: 8,horizontal: 4),
                     child: TextField(
                       onChanged: context.read<MoedaViewModel>().filtrar,
                       style: TextStyle(color: Cores.amarelo),
@@ -85,7 +85,7 @@ class HomePage extends StatelessWidget {
               ),
             ),
             Expanded(
-              child:ListView.separated(
+              child: moedas.isEmpty?Center(child: Text('Nenhuma Moeda Encontrada',style: TextStyle(color: Cores.amarelo),),):ListView.separated(
               itemCount: moedas.length,
               separatorBuilder: (context,index){
                 return Divider(color: Colors.grey[400],height: 2,thickness: 2,);

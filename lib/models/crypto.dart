@@ -1,12 +1,12 @@
 class Crypto {
-  final String id;
-  final String name;
-  final String symbol;
-  final double price;
-  final double changePercent24h;
-  final String logo;
-  final String description;
-  final double volume;
+  String id;
+  String name;
+  String symbol;
+  double price;
+  double changePercent24h;
+  String logo;
+  String description;
+  double volume;
 
   Crypto({
     required this.id,

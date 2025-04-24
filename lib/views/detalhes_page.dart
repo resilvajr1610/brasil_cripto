@@ -1,5 +1,5 @@
 import 'dart:async';
-
+import 'package:translator/translator.dart';
 import 'package:brasil_cripto/models/cores.dart';
 import 'package:brasil_cripto/models/crypto.dart';
 import 'package:flutter/material.dart';
@@ -33,10 +33,19 @@ class _DetalhesPageState extends State<DetalhesPage> {
   Future<void> carregarDetalhes() async {
     await ApiService.buscarDetalhes(widget.moeda.id).then((detalhes){
         crypto = Crypto.fromJson(detalhes);
-        carregando = false;
-        setState(() {});
+        traduzirDescricao();
     }).onError((erro, e){
       print('erro = = = = ${erro.toString()}');
+      carregando = false;
+      setState(() {});
+    });
+  }
+
+  Future<void> traduzirDescricao() async {
+    final translator = GoogleTranslator();
+    final traducao = await translator.translate(crypto!.description, to: 'pt');
+    setState(() {
+      crypto!.description = traducao.text;
       carregando = false;
       setState(() {});
     });
@@ -101,7 +110,10 @@ class _DetalhesPageState extends State<DetalhesPage> {
               style: TextStyle(fontWeight: FontWeight.bold,color: Cores.azul),
             ),
             SizedBox(height: 8),
-            Text(crypto==null?'':'${crypto!.description}',style: TextStyle(color: Cores.azulClaro),),
+            Text(crypto==null?'':'${crypto!.description}',
+              textAlign: TextAlign.justify,
+              style: TextStyle(color: Cores.azulClaro,),
+            ),
             SizedBox(height: 15),
             FutureBuilder<List<PrecoHistorico>>(
               future: historico,
