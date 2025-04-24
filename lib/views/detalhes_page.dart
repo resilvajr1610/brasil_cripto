@@ -72,7 +72,7 @@ class _DetalhesPageState extends State<DetalhesPage> {
           ],
         ),
       ),
-      body: carregando || crypto==null
+      body: carregando
           ? Center(child: CircularProgressIndicator(color: Cores.azul,))
           : Padding(
         padding: const EdgeInsets.all(16.0),
@@ -82,26 +82,26 @@ class _DetalhesPageState extends State<DetalhesPage> {
               'Preço Atual:',
               style: TextStyle(fontWeight: FontWeight.bold,color: Cores.azul),
             ),
-            Text('R\$ ${NumberFormat('#,##0.00', 'pt_BR').format(crypto!.price)}',style: TextStyle(color: Cores.azulClaro),),
+            Text(crypto==null?'R\$ 0,00':'R\$ ${NumberFormat('#,##0.00', 'pt_BR').format(crypto!.price)}',style: TextStyle(color: Cores.azulClaro),),
             SizedBox(height: 16),
             Text(
               'Variação 24h:',
               style: TextStyle(fontWeight: FontWeight.bold,color: Cores.azul),
             ),
-            Text('${crypto!.changePercent24h.toStringAsFixed(2).replaceAll('.', ',')}%',style: TextStyle(color: Cores.azulClaro),),
+            Text(crypto==null?'0 %':'${crypto!.changePercent24h.toStringAsFixed(2).replaceAll('.', ',')}%',style: TextStyle(color: Cores.azulClaro),),
             SizedBox(height: 16),
             Text(
               'Volume:',
               style: TextStyle(fontWeight: FontWeight.bold,color: Cores.azul),
             ),
-            Text('${NumberFormat('00,000').format(crypto!.volume.toInt()).replaceAll(',', '.')}',style: TextStyle(color: Cores.azulClaro),),
+            Text(crypto==null?'0':'${NumberFormat('00,000').format(crypto!.volume.toInt()).replaceAll(',', '.')}',style: TextStyle(color: Cores.azulClaro),),
             SizedBox(height: 16),
             Text(
               'Descrição:',
               style: TextStyle(fontWeight: FontWeight.bold,color: Cores.azul),
             ),
             SizedBox(height: 8),
-            Text('${crypto!.description}',style: TextStyle(color: Cores.azulClaro),),
+            Text(crypto==null?'':'${crypto!.description}',style: TextStyle(color: Cores.azulClaro),),
             SizedBox(height: 15),
             FutureBuilder<List<PrecoHistorico>>(
               future: historico,
@@ -109,7 +109,7 @@ class _DetalhesPageState extends State<DetalhesPage> {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return Center(child: CircularProgressIndicator());
                 } else if (snapshot.hasError) {
-                  return Center(child: Text('Erro ao carregar gráfico'));
+                  return Center(child: Text('Falha ao carregar os dados'));
                 } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
                   return Center(child: Text('Sem dados de gráfico'));
                 }
